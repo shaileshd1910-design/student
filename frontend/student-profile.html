@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Student Profile</title>
+
+<link
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+rel="stylesheet"
+>
+
+<style>
+
+body{
+    background:#f2f2f2;
+}
+
+.student-item{
+
+    padding:10px;
+    border:1px solid #ddd;
+    margin-bottom:10px;
+    cursor:pointer;
+    border-radius:5px;
+    background:white;
+
+}
+
+.student-item:hover{
+
+    background:#f0f0f0;
+
+}
+
+.student-photo{
+
+    width:150px;
+    height:180px;
+    object-fit:cover;
+    border:2px solid black;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container mt-4">
+
+<div class="row">
+
+<!-- LEFT SIDE -->
+
+<div class="col-md-4">
+
+<div class="card shadow p-3">
+
+<h3 class="mb-3">
+All Students
+</h3>
+
+<div id="studentList"></div>
+
+</div>
+
+</div>
+
+<!-- RIGHT SIDE -->
+
+<div class="col-md-8">
+
+<div class="card shadow p-4">
+
+<div class="d-flex justify-content-between">
+
+<h3>
+Student Profile
+</h3>
+
+<div>
+
+<button
+class="btn btn-primary"
+onclick="openUpdate()"
+>
+✏ Edit
+</button>
+
+<button
+class="btn btn-success"
+onclick="openPrint()"
+>
+🖨 Print
+</button>
+
+</div>
+
+</div>
+
+<hr>
+
+<div class="row">
+
+<div class="col-md-4 text-center">
+
+<img
+id="photo"
+src="https://via.placeholder.com/150"
+class="student-photo mb-3"
+>
+
+<h4 id="name">
+Student Name
+</h4>
+
+</div>
+
+<div class="col-md-8">
+
+<table class="table table-bordered">
+
+<tr>
+<th>ID</th>
+<td id="id"></td>
+</tr>
+
+<tr>
+<th>Father Name</th>
+<td id="father"></td>
+</tr>
+
+<tr>
+<th>Mobile</th>
+<td id="mobile"></td>
+</tr>
+
+<tr>
+<th>Course</th>
+<td id="course"></td>
+</tr>
+
+<tr>
+<th>Year</th>
+<td id="year"></td>
+</tr>
+
+<tr>
+<th>Total Fees</th>
+<td id="fees"></td>
+</tr>
+
+<tr>
+<th>Paid Fees</th>
+<td id="paid"></td>
+</tr>
+
+<tr>
+<th>Pending Fees</th>
+<td id="pending"></td>
+</tr>
+
+<tr>
+<th>Address</th>
+<td id="address"></td>
+</tr>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+let currentStudentId = null;
+
+
+// LOAD ALL STUDENTS
+
+async function loadStudents(){
+
+    const response = await fetch(
+
+        "http://localhost:5000/api/students"
+
+    );
+
+    const students = await response.json();
+
+    let output = "";
+
+    students.forEach(student => {
+
+        output += `
+
+        <div
+        class="student-item"
+        onclick="loadStudent(${student.id})"
+        >
+
+        <b>${student.student_name}</b>
+
+        <br>
+
+        ${student.course}
+
+        </div>
+
+        `;
+
+    });
+
+    document.getElementById("studentList").innerHTML =
+        output;
+
+}
+
+loadStudents();
+
+
+// LOAD SINGLE STUDENT
+
+async function loadStudent(id){
+
+    currentStudentId = id;
+
+    const response = await fetch(
+
+        `http://localhost:5000/api/students/${id}`
+
+    );
+
+    const student = await response.json();
+
+    document.getElementById("photo").src =
+        `http://localhost:5000/uploads/${student.photo}`;
+
+    document.getElementById("name").innerText =
+        student.student_name;
+
+    document.getElementById("id").innerText =
+        student.id;
+
+    document.getElementById("father").innerText =
+        student.father_name;
+
+    document.getElementById("mobile").innerText =
+        student.mobile;
+
+    document.getElementById("course").innerText =
+        student.course;
+
+    document.getElementById("year").innerText =
+        student.year;
+
+    document.getElementById("fees").innerText =
+        student.total_fees;
+
+    document.getElementById("paid").innerText =
+        student.paid_amount;
+
+    document.getElementById("pending").innerText =
+        student.pending_amount;
+
+    document.getElementById("address").innerText =
+        student.address;
+
+}
+
+
+// OPEN UPDATE PAGE
+
+function openUpdate(){
+
+    if(currentStudentId == null){
+
+        alert("Select Student First");
+
+        return;
+
+    }
+
+    window.open(
+
+        `update.html?id=${currentStudentId}`,
+
+        "_blank"
+
+    );
+
+}
+
+
+// OPEN PRINT PAGE
+
+function openPrint(){
+
+    if(currentStudentId == null){
+
+        alert("Select Student First");
+
+        return;
+
+    }
+
+    window.open(
+
+        `print.html?id=${currentStudentId}`,
+
+        "_blank"
+
+    );
+
+}
+
+</script>
+
+</body>
+</html>
