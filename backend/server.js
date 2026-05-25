@@ -31,7 +31,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/uploads", express.static("uploads"));
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "frontend")));
+app.use("/students", studentRoutes);
 
 /* =========================
    ROUTES
