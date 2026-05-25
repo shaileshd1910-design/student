@@ -102,7 +102,15 @@ app.post("/login", async (req, res) => {
    HOME PAGE
 ========================= */
 
+app.use(express.static(path.join(__dirname, "../frontend")));
+
 app.get("/", (req, res) => {
+
+    res.sendFile(path.join(__dirname, "../frontend/index.html"));
+
+});
+
+app.get("/admin", (req, res) => {
 
     res.sendFile(path.join(__dirname, "../frontend/admin.html"));
 
