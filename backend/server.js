@@ -1,10 +1,23 @@
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 
 import studentRoutes from "./routes/studentRoutes.js";
 import db from "./db.js";
 
+dotenv.config();
+
 const app = express();
+
+/* =========================
+   PATH
+========================= */
+
+const __filename = fileURLToPath(import.meta.url);
+
+const __dirname = path.dirname(__filename);
 
 /* =========================
    MIDDLEWARE
@@ -17,6 +30,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/uploads", express.static("uploads"));
+
+app.use(express.static(path.join(__dirname, "public")));
 
 /* =========================
    ROUTES
@@ -83,12 +98,22 @@ app.post("/login", async (req, res) => {
 });
 
 /* =========================
-   TEST
+   HOME PAGE
 ========================= */
 
 app.get("/", (req, res) => {
 
-    res.send("Server Running");
+    res.sendFile(path.join(__dirname, "public", "index.html"));
+
+});
+
+/* =========================
+   TEST ROUTE
+========================= */
+
+app.get("/test", (req, res) => {
+
+    res.send("Server Running Successfully");
 
 });
 
@@ -96,8 +121,10 @@ app.get("/", (req, res) => {
    SERVER
 ========================= */
 
-app.listen(5000, () => {
+const PORT = process.env.PORT || 5000;
 
-    console.log("Server Running On Port 5000");
+app.listen(PORT, () => {
+
+    console.log(`Server Running On Port ${PORT}`);
 
 });
